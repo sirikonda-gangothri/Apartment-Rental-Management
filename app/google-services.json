@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "944413616427",
+    "project_id": "nivasa-3397d",
+    "storage_bucket": "nivasa-3397d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:944413616427:android:74204dd2d56c4132c6bd6e",
+        "android_client_info": {
+          "package_name": "com.example.apartmentrentalmanagement"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXlOkzVWChtJ9_0bJH0LIDSb4BX9SNrZU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

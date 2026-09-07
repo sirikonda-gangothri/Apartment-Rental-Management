@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ApartmentRentalManagementTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
+                    Welcome(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -31,9 +31,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Welcome(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name!",
+        text = "Welcome to Rental App",
         modifier = modifier
     )
 }
@@ -42,6 +42,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     ApartmentRentalManagementTheme {
-        Greeting("Android")
+        Welcome("Android")
     }
 }
