@@ -80,6 +80,8 @@ class SplashActivity : ComponentActivity() {
                 color = MaterialTheme.colorScheme.primary
             )
 
+
+
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(

@@ -5,23 +5,50 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Apartment
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Payments
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.apartmentrentalmanagement.screens.auth.LoginActivity
+import com.example.apartmentrentalmanagement.screens.building.DashboardCard
 import com.example.apartmentrentalmanagement.screens.profile.ProfileActivity
+import com.example.apartmentrentalmanagement.screens.building.PropertyManagementActivity
+//import com.example.apartmentrentalmanagement.screens.login.LoginActivity
 import com.example.apartmentrentalmanagement.ui.theme.ApartmentRentalManagementTheme
+import com.google.firebase.auth.FirebaseAuth
+import kotlin.jvm.java
 
 class DashboardActivity : ComponentActivity() {
 
@@ -35,92 +62,239 @@ class DashboardActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun DashboardScreen() {
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+        var selectedItem by remember {
+            mutableIntStateOf(0)
+        }
 
-            Text(
-                text = "Welcome to Nivasa",
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
+        Scaffold(
 
-            Spacer(modifier = Modifier.height(12.dp))
+            topBar = {
 
-            Text(
-                text = "Apartment Rental Management",
-                fontSize = 16.sp
-            )
+                TopAppBar(
 
-            Spacer(modifier = Modifier.height(32.dp))
+                    title = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
 
-            Button(
-                onClick = {
-                    // Apartments feature will be added next
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Manage Apartments")
-            }
+                            Text(
+                                text = "Nivasa",
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    },
 
-            Spacer(modifier = Modifier.height(12.dp))
+                    actions = {
 
-            Button(
-                onClick = {
-                    // Renters feature will be added next
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Manage Renters")
-            }
+                        IconButton(
+                            onClick = {
 
-            Spacer(modifier = Modifier.height(12.dp))
+                                startActivity(
+                                    Intent(
+                                        this@DashboardActivity,
+                                        ProfileActivity::class.java
+                                    )
+                                )
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.AccountCircle,
+                                contentDescription = "Profile"
+                            )
+                        }
 
-            Button(
-                onClick = {
-                    // Rent Tracker feature will be added next
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Rent Tracker")
-            }
+                        IconButton(
+                            onClick = {
+                                logout()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Logout,
+                                contentDescription = "Logout"
+                            )
+                        }
+                    }
+                )
+            },
 
-            Spacer(modifier = Modifier.height(12.dp))
+            bottomBar = {
 
-            Button(
-                onClick = {
-                    // Profile feature will be added next
-                    startActivity(
-                        Intent(
-                            this@DashboardActivity,
-                            ProfileActivity::class.java
-                        )
+                NavigationBar {
+
+                    NavigationBarItem(
+                        selected = selectedItem == 0,
+                        onClick = {
+                            startActivity(
+                                Intent(
+                                    this@DashboardActivity,
+                                    PropertyManagementActivity::class.java
+                                )
+                            )
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.Apartment,
+                                contentDescription = "Manage Apartments"
+                            )
+                        },
+                        label = {
+                            Text("Apartments")
+                        }
                     )
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Profile")
+
+                    NavigationBarItem(
+                        selected = selectedItem == 1,
+                        onClick = {
+                            selectedItem = 1
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.People,
+                                contentDescription = "Manage Renters"
+                            )
+                        },
+                        label = {
+                            Text("Renters")
+                        }
+                    )
+
+                    NavigationBarItem(
+                        selected = selectedItem == 2,
+                        onClick = {
+                            selectedItem = 2
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.Payments,
+                                contentDescription = "Rent Tracker"
+                            )
+                        },
+                        label = {
+                            Text("Rent Tracker")
+                        }
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+        ) { innerPadding ->
 
-            Button(
-                onClick = {
-                    // Logout will be added next
-                },
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(horizontal = 16.dp)
             ) {
-                Text("Logout")
+
+                Spacer(
+                    modifier = Modifier.height(20.dp)
+                )
+
+                Text(
+                    text = "Welcome back! 👋",
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(
+                    modifier = Modifier.height(20.dp)
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+
+
+                    DashboardCard(
+                        title = "Total Flats",
+                        value = "--",
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    DashboardCard(
+                        title = "Occupied",
+                        value = "--",
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    DashboardCard(
+                        title = "Vacant",
+                        value = "--",
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                Spacer(
+                    modifier = Modifier.height(16.dp)
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+
+                    DashboardCard(
+                        title = "Expected Rent",
+                        value = "₹--",
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    DashboardCard(
+                        title = "Collected Rent",
+                        value = "₹--",
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                Spacer(
+                    modifier = Modifier.height(16.dp)
+                )
+
+                DashboardCard(
+                    title = "Pending Rent",
+                    value = "₹--",
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(
+                    modifier = Modifier.height(24.dp)
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+
+                    Text(
+                        text = "Analytics coming soon",
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }
-}
 
+    private fun logout() {
+
+        FirebaseAuth
+            .getInstance()
+            .signOut()
+
+        val intent = Intent(
+            this,
+            LoginActivity::class.java
+        )
+
+        startActivity(intent)
+
+        finish()
+    }
+}

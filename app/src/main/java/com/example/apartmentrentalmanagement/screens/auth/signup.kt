@@ -2,6 +2,7 @@ package com.example.apartmentrentalmanagement.screens.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -32,15 +33,20 @@ import androidx.compose.ui.unit.sp
 import com.example.apartmentrentalmanagement.screens.dashboard.DashboardActivity
 import com.example.apartmentrentalmanagement.ui.theme.ApartmentRentalManagementTheme
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class SignupActivity : ComponentActivity() {
 
+    private val TAG = "SignupActivity"
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         auth = FirebaseAuth.getInstance()
+        db= FirebaseFirestore.getInstance()
 
         setContent {
             ApartmentRentalManagementTheme {
@@ -65,6 +71,10 @@ class SignupActivity : ComponentActivity() {
         }
 
         var confirmPassword by remember {
+            mutableStateOf("")
+        }
+
+        var phoneNumber by remember {
             mutableStateOf("")
         }
 
@@ -122,6 +132,20 @@ class SignupActivity : ComponentActivity() {
             Spacer(modifier = Modifier.height(12.dp))
 
             OutlinedTextField(
+                value = phoneNumber,
+                onValueChange = {
+                    phoneNumber = it
+                },
+                label = {
+                    Text("Phone Number")
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
                 value = password,
                 onValueChange = {
                     password = it
@@ -171,6 +195,22 @@ class SignupActivity : ComponentActivity() {
                             ).show()
                         }
 
+                        phoneNumber.isBlank() -> {
+                            Toast.makeText(
+                                this@SignupActivity,
+                                "Please enter your phone number",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        phoneNumber.length != 10 || !phoneNumber.all { it.isDigit() }  -> {
+                            Toast.makeText(
+                                this@SignupActivity,
+                                "Please enter a valid 10-digit phone number",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
                         password.isBlank() -> {
                             Toast.makeText(
                                 this@SignupActivity,
@@ -188,28 +228,64 @@ class SignupActivity : ComponentActivity() {
                         }
 
                         else -> {
-
+                            Log.d(TAG, "Creating user with email: $email")
                             auth.createUserWithEmailAndPassword(
                                 email,
                                 password
                             ).addOnCompleteListener { task ->
 
                                 if (task.isSuccessful) {
+                                    val user = auth.currentUser
+                                    val uid = user?.uid
+                                    Log.d(TAG, "Auth user created successfully, UID: $uid")
 
-                                    Toast.makeText(
-                                        this@SignupActivity,
-                                        "Account created successfully!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    val userData = hashMapOf(
+                                        "fullName" to name,
+                                        "email" to email,
+                                        "phoneNumber" to phoneNumber
+                                    )
 
-                                    startActivity(
-                                        Intent(
+                                    if (uid != null) {
+                                        Log.d(TAG, "Saving user data to Firestore...")
+                                        db.collection("users")
+                                            .document(uid)
+                                            .set(userData)
+                                            .addOnSuccessListener {
+                                                Log.d(TAG, "User data saved to Firestore successfully")
+                                                Toast.makeText(
+                                                    this@SignupActivity,
+                                                    "Account created successfully!",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+
+                                                startActivity(
+                                                    Intent(
+                                                        this@SignupActivity,
+                                                        DashboardActivity::class.java
+                                                    )
+                                                )
+                                                finish()
+                                            }
+                                            .addOnFailureListener { exception ->
+                                                Log.e(TAG, "Failed to save user data to Firestore", exception)
+                                                Toast.makeText(
+                                                    this@SignupActivity,
+                                                    exception.message ?: "Failed to save user information",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                            }
+
+                                    } else {
+                                        Log.e(TAG, "User created but UID is null")
+                                        Toast.makeText(
                                             this@SignupActivity,
-                                            DashboardActivity::class.java ) )
-                                    finish()
+                                            "User ID not found",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
 
                                 } else {
-
+                                    Log.e(TAG, "Auth signup failed", task.exception)
                                     Toast.makeText(
                                         this@SignupActivity,
                                         task.exception?.message
