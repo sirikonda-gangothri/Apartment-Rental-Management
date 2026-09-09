@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.apartmentrentalmanagement.screens.building.addproperty.AddPropertyScreen
 import com.example.apartmentrentalmanagement.ui.theme.ApartmentRentalManagementTheme
 
 class PropertyManagementActivity : ComponentActivity() {
@@ -32,7 +33,21 @@ fun PropertyManagementNavigation() {
         startDestination = "building_list"
     ) {
         composable("building_list") {
-            BuildingListScreen()
+            BuildingListScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onAddPropertyClick = {
+                    navController.navigate("add_property")
+                }
+            )
+        }
+
+        composable("add_property") {
+            AddPropertyScreen(
+                onBackClick = {
+                    navController.popBackStack()}
+            )
         }
     }
 }
