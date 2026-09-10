@@ -28,6 +28,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun AddPropertyScreen(
@@ -324,6 +326,17 @@ fun AddPropertyScreen(
             singleLine = true
         )
 
+        Button(
+            onClick = {
+                statusMenuExpanded = true
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "Change Status"
+            )
+        }
+
         DropdownMenu(
             expanded = statusMenuExpanded,
             onDismissRequest = {
@@ -360,7 +373,41 @@ fun AddPropertyScreen(
                 ) {
                     showError = true
                 } else {
-                    onSaveClick()
+
+                    val currentUser = FirebaseAuth
+                        .getInstance()
+                        .currentUser
+
+                    if (currentUser == null) {
+                        return@Button
+                    }
+
+                    val propertyData = hashMapOf(
+                        "propertyName" to propertyName,
+                        "propertyType" to propertyType,
+                        "propertyId" to propertyId,
+                        "location" to location,
+                        "floors" to floors.toIntOrNull(),
+                        "units" to units.toIntOrNull(),
+                        "status" to status
+                    )
+
+                    FirebaseFirestore
+                        .getInstance()
+                        .collection("users")
+                        .document(currentUser.uid)
+                        .collection("properties")
+                        .add(propertyData)
+                        .addOnSuccessListener {
+
+                            // Firestore save completed successfully
+                            onSaveClick()
+                        }
+                        .addOnFailureListener { exception ->
+
+                            // Firestore save failed
+                            println("Firestore error: ${exception.message}")
+                        }
                 }
             },
             modifier = Modifier.fillMaxWidth()
