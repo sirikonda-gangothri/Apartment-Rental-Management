@@ -63,6 +63,51 @@ class BuildingViewModel : ViewModel() {
             }
     }
 
+    fun loadFlat(
+        propertyDocumentId: String,
+        flatId: String,
+        onLoaded: (Flat) -> Unit
+    ) {
+
+        val userId = auth.currentUser?.uid ?: return
+
+        db.collection("users")
+            .document(userId)
+            .collection("properties")
+            .document(propertyDocumentId)
+            .collection("flats")
+            .document(flatId)
+            .get()
+            .addOnSuccessListener { document ->
+
+                if (document.exists()) {
+
+                    val flat = Flat(
+                        id = document.id,
+                        flatNumber =
+                            document.getString("flatNumber") ?: "",
+                        floor =
+                            document.getLong("floor")?.toInt() ?: 0,
+                        flatType =
+                            document.getString("flatType") ?: "",
+                        monthlyRent =
+                            document.getDouble("monthlyRent") ?: 0.0,
+                        occupancyStatus =
+                            document.getString("occupancyStatus")
+                                ?: "VACANT",
+                        currentRenterId =
+                            document.getString("currentRenterId")
+                    )
+
+                    onLoaded(flat)
+                }
+            }
+            .addOnFailureListener { exception ->
+
+                errorMessage = exception.message
+            }
+    }
+
     fun loadProperty(propertyDocumentId: String) {
 
         val userId = auth.currentUser?.uid ?: return
@@ -82,7 +127,8 @@ class BuildingViewModel : ViewModel() {
                         type = document.getString("propertyType") ?: "",
                         propertyId = document.getString("propertyId") ?: "",
                         location = document.getString("location") ?: "",
-                        status = document.getString("status") ?: ""
+                        status = document.getString("status") ?: "",
+                        floors = document.getLong("floors")?.toInt() ?: 0
                     )
                 }
             }

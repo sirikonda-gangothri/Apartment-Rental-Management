@@ -42,7 +42,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.apartmentrentalmanagement.screens.auth.LoginActivity
-import com.example.apartmentrentalmanagement.screens.building.DashboardCard
 import com.example.apartmentrentalmanagement.screens.profile.ProfileActivity
 import com.example.apartmentrentalmanagement.screens.building.PropertyManagementActivity
 //import com.example.apartmentrentalmanagement.screens.login.LoginActivity
@@ -278,6 +277,43 @@ class DashboardActivity : ComponentActivity() {
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+            }
+        }
+    }
+
+    @Composable
+    fun DashboardCard(
+        title: String,
+        value: String,
+        modifier: Modifier = Modifier
+    ) {
+
+        Card(
+            modifier = modifier,
+            shape = RoundedCornerShape(16.dp)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+
+                Text(
+                    text = title,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
+
+                Text(
+                    text = value,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

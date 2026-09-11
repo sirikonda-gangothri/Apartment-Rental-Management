@@ -99,38 +99,30 @@ fun PropertyManagementNavigation() {
                 ) ?: return@composable
 
             BuildingDetailsScreen(
-
                 propertyDocumentId = propertyDocumentId,
-
-                buildingName = "Building",
-
-                address = "",
-
-                numberOfFloors = 0,
+                onBackClick = {
+                    navController.popBackStack()
+                },
 
                 onAddFlatClick = {
-
                     navController.navigate(
                         "add_edit_flat/$propertyDocumentId"
                     )
                 },
 
                 onBulkGenerateClick = {
-
                     navController.navigate(
                         "bulk_generate_flats/$propertyDocumentId"
                     )
                 },
 
                 onFlatClick = { flat ->
-
                     navController.navigate(
                         "add_edit_flat/$propertyDocumentId?flatId=${flat.id}"
                     )
                 }
             )
         }
-
 
         // --------------------------------------------------
         // BULK FLAT GENERATION
@@ -154,8 +146,6 @@ fun PropertyManagementNavigation() {
 
                 propertyDocumentId = propertyDocumentId,
 
-                numberOfFloors = 5,
-
                 onBackClick = {
                     navController.popBackStack()
                 },
@@ -165,7 +155,6 @@ fun PropertyManagementNavigation() {
                 }
             )
         }
-
 
         // --------------------------------------------------
         // ADD / EDIT FLAT
@@ -196,11 +185,11 @@ fun PropertyManagementNavigation() {
                 backStackEntry.arguments?.getString("flatId")
 
             AddEditFlatScreen(
-
-                buildingId = propertyDocumentId,
-
-                flat = null,
-
+                propertyDocumentId = propertyDocumentId,
+                flatId = flatId,
+                onBackClick = {
+                    navController.popBackStack()
+                },
                 onSaveSuccess = {
                     navController.popBackStack()
                 }
