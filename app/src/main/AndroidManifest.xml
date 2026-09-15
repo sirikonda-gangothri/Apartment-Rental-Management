@@ -47,6 +47,9 @@
             android:name=".screens.building.PropertyManagementActivity"
             android:exported="false"/>
 
+        <activity android:name=".screens.renter.RenterManagementActivity"
+            android:exported="false"/>
+
     </application>
 
 

@@ -99,7 +99,9 @@ fun PropertyManagementNavigation() {
                 ) ?: return@composable
 
             BuildingDetailsScreen(
+
                 propertyDocumentId = propertyDocumentId,
+
                 onBackClick = {
                     navController.popBackStack()
                 },
@@ -117,12 +119,61 @@ fun PropertyManagementNavigation() {
                 },
 
                 onFlatClick = { flat ->
+
                     navController.navigate(
-                        "add_edit_flat/$propertyDocumentId?flatId=${flat.id}"
+                        "flat_details/$propertyDocumentId/${flat.id}"
                     )
                 }
             )
         }
+
+
+        // --------------------------------------------------
+        // FLAT DETAILS
+        // --------------------------------------------------
+
+        composable(
+            route = "flat_details/{propertyDocumentId}/{flatId}",
+            arguments = listOf(
+
+                navArgument("propertyDocumentId") {
+                    type = NavType.StringType
+                },
+
+                navArgument("flatId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+
+            val propertyDocumentId =
+                backStackEntry.arguments?.getString(
+                    "propertyDocumentId"
+                ) ?: return@composable
+
+            val flatId =
+                backStackEntry.arguments?.getString(
+                    "flatId"
+                ) ?: return@composable
+
+            FlatDetailsScreen(
+
+                propertyDocumentId = propertyDocumentId,
+
+                flatId = flatId,
+
+                onBackClick = {
+                    navController.popBackStack()
+                },
+
+                onEditFlatClick = {
+                    navController.navigate(
+                        "add_edit_flat/$propertyDocumentId?flatId=$flatId"
+                    )
+                }
+            )
+        }
+
 
         // --------------------------------------------------
         // BULK FLAT GENERATION
@@ -156,6 +207,7 @@ fun PropertyManagementNavigation() {
             )
         }
 
+
         // --------------------------------------------------
         // ADD / EDIT FLAT
         // --------------------------------------------------
@@ -182,14 +234,20 @@ fun PropertyManagementNavigation() {
                 ) ?: return@composable
 
             val flatId =
-                backStackEntry.arguments?.getString("flatId")
+                backStackEntry.arguments?.getString(
+                    "flatId"
+                )
 
             AddEditFlatScreen(
+
                 propertyDocumentId = propertyDocumentId,
+
                 flatId = flatId,
+
                 onBackClick = {
                     navController.popBackStack()
                 },
+
                 onSaveSuccess = {
                     navController.popBackStack()
                 }

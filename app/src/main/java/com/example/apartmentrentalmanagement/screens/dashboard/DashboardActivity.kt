@@ -44,6 +44,8 @@ import androidx.compose.ui.unit.sp
 import com.example.apartmentrentalmanagement.screens.auth.LoginActivity
 import com.example.apartmentrentalmanagement.screens.profile.ProfileActivity
 import com.example.apartmentrentalmanagement.screens.building.PropertyManagementActivity
+import com.example.apartmentrentalmanagement.screens.renter.RenterManagementActivity
+//import com.example.apartmentrentalmanagement.screens.renter.RenterManagementNavigation
 //import com.example.apartmentrentalmanagement.screens.login.LoginActivity
 import com.example.apartmentrentalmanagement.ui.theme.ApartmentRentalManagementTheme
 import com.google.firebase.auth.FirebaseAuth
@@ -149,7 +151,12 @@ class DashboardActivity : ComponentActivity() {
                     NavigationBarItem(
                         selected = selectedItem == 1,
                         onClick = {
-                            selectedItem = 1
+                            startActivity(
+                                Intent(
+                                    this@DashboardActivity,
+                                    RenterManagementActivity::class.java
+                                )
+                            )
                         },
                         icon = {
                             Icon(

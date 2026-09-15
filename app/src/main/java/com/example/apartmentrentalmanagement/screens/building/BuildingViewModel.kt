@@ -149,41 +149,77 @@ class BuildingViewModel : ViewModel() {
         isSaving = true
         errorMessage = null
 
-        val flatData = hashMapOf(
-            "flatNumber" to flat.flatNumber,
-            "floor" to flat.floor,
-            "flatType" to flat.flatType,
-            "monthlyRent" to flat.monthlyRent,
-            "occupancyStatus" to flat.occupancyStatus,
-            "currentRenterId" to flat.currentRenterId
-        )
-
         val flatsCollection = db.collection("users")
             .document(userId)
             .collection("properties")
             .document(propertyDocumentId)
             .collection("flats")
 
-        val task = if (flat.id.isBlank()) {
+        if (flat.id.isBlank()) {
 
-            flatsCollection.add(flatData)
+            // ---------------------------------------------------------
+            // NEW FLAT
+            // ---------------------------------------------------------
+            // Every newly created flat must start as VACANT.
+            // It cannot have a current renter yet.
+            // ---------------------------------------------------------
+
+            val flatData = hashMapOf(
+                "flatNumber" to flat.flatNumber,
+                "floor" to flat.floor,
+                "flatType" to flat.flatType,
+                "monthlyRent" to flat.monthlyRent,
+                "occupancyStatus" to "VACANT",
+                "currentRenterId" to null
+            )
+
+            flatsCollection
+                .add(flatData)
+                .addOnSuccessListener {
+
+                    isSaving = false
+                    onSuccess()
+
+                }
+                .addOnFailureListener { exception ->
+
+                    isSaving = false
+                    errorMessage = exception.message
+                }
 
         } else {
+
+            // ---------------------------------------------------------
+            // EXISTING FLAT
+            // ---------------------------------------------------------
+            // Preserve its current occupancy information.
+            // This is important because an occupied flat should
+            // remain occupied when only its details are edited.
+            // ---------------------------------------------------------
+
+            val flatData = hashMapOf(
+                "flatNumber" to flat.flatNumber,
+                "floor" to flat.floor,
+                "flatType" to flat.flatType,
+                "monthlyRent" to flat.monthlyRent,
+                "occupancyStatus" to flat.occupancyStatus,
+                "currentRenterId" to flat.currentRenterId
+            )
 
             flatsCollection
                 .document(flat.id)
                 .set(flatData)
-        }
+                .addOnSuccessListener {
 
-        task.addOnSuccessListener {
+                    isSaving = false
+                    onSuccess()
 
-            isSaving = false
-            onSuccess()
+                }
+                .addOnFailureListener { exception ->
 
-        }.addOnFailureListener { exception ->
-
-            isSaving = false
-            errorMessage = exception.message
+                    isSaving = false
+                    errorMessage = exception.message
+                }
         }
     }
 
