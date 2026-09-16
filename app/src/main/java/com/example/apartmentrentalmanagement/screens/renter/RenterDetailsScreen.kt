@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import java.util.Calendar
 
@@ -101,7 +102,8 @@ fun RenterDetailsScreen(
 
                 Text(
                     text = currentRenter.name,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp
                 )
 
                 Text(
@@ -125,7 +127,7 @@ fun RenterDetailsScreen(
                 )
 
                 Text(
-                    text = "Monthly Rent: ₹${currentRenter.monthlyRent}"
+                    text = "Agreed Monthly Rent: ₹${currentRenter.monthlyRent}"
                 )
 
                 Text(
@@ -137,7 +139,13 @@ fun RenterDetailsScreen(
                 )
 
                 Text(
-                    text = "Lease End: ${currentRenter.leaseEndDate}"
+                    text = "Lease End: ${
+                        if (currentRenter.leaseEndDate.isBlank()) {
+                            "No fixed end date"
+                        } else {
+                            currentRenter.leaseEndDate
+                        }
+                    }"
                 )
 
                 Text(

@@ -250,6 +250,7 @@ private fun RenterCard(
             modifier = Modifier.padding(16.dp)
         ) {
 
+            // Renter name + status
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -278,24 +279,97 @@ private fun RenterCard(
             }
 
             Spacer(
-                modifier = Modifier.height(8.dp)
+                modifier = Modifier.height(12.dp)
+            )
+
+            // Building + Flat
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+                Column {
+                    Text(
+                        text = "Building",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(2.dp)
+                    )
+
+                    Text(
+                        text = renter.propertyName,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+                Column(
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Text(
+                        text = "Flat",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(2.dp)
+                    )
+
+                    Text(
+                        text = renter.flatNumber,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+
+            Spacer(
+                modifier = Modifier.height(12.dp)
+            )
+
+            // Phone
+            Text(
+                text = "Phone",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(
+                modifier = Modifier.height(2.dp)
             )
 
             Text(
-                text = "Phone: ${renter.phone}"
+                text = renter.phone,
+                style = MaterialTheme.typography.bodyLarge
             )
 
-            Text(
-                text = "Building: ${renter.propertyName}"
+            Spacer(
+                modifier = Modifier.height(12.dp)
             )
 
-            Text(
-                text = "Flat: ${renter.flatNumber}"
-            )
+            // Monthly rent
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
-            Text(
-                text = "Monthly Rent: ₹${renter.monthlyRent}"
-            )
+                Text(
+                    text = "Monthly Rent",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f)
+                )
+
+                Text(
+                    text = "₹${renter.monthlyRent}",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }

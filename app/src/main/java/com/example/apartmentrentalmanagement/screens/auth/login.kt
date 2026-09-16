@@ -159,7 +159,7 @@ class LoginActivity : ComponentActivity() {
                                         Toast.LENGTH_SHORT
                                     ).show()
 
-                                    // Dashboard navigation will be added next
+                                    // Dashboard navigation
                                     startActivity(
                                         Intent(
                                             this@LoginActivity,

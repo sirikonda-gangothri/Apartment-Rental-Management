@@ -225,7 +225,7 @@ fun FlatDetailsScreen(
                     DetailRow(
                         label = "Status",
                         value = currentFlat.occupancyStatus
-                            .replace("_", " ")
+                            .replace("_", " ")   //"NOT_OCCUPIED" → "NOT OCCUPIED"
                     )
                 }
             }

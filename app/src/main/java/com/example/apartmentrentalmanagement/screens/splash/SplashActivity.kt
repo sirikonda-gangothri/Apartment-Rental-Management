@@ -144,5 +144,4 @@ class SplashActivity : ComponentActivity() {
             SplashScreen()
         }
     }
-
 }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -44,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.example.apartmentrentalmanagement.screens.auth.LoginActivity
 import com.example.apartmentrentalmanagement.screens.profile.ProfileActivity
 import com.example.apartmentrentalmanagement.screens.building.PropertyManagementActivity
+import com.example.apartmentrentalmanagement.screens.rent.RentManagementActivity
 import com.example.apartmentrentalmanagement.screens.renter.RenterManagementActivity
 //import com.example.apartmentrentalmanagement.screens.renter.RenterManagementNavigation
 //import com.example.apartmentrentalmanagement.screens.login.LoginActivity
@@ -172,7 +172,12 @@ class DashboardActivity : ComponentActivity() {
                     NavigationBarItem(
                         selected = selectedItem == 2,
                         onClick = {
-                            selectedItem = 2
+                                startActivity(
+                                    Intent(
+                                        this@DashboardActivity,
+                                        RentManagementActivity::class.java
+                                    )
+                                )
                         },
                         icon = {
                             Icon(

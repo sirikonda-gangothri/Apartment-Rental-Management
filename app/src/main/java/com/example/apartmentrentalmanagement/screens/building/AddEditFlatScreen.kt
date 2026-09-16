@@ -272,7 +272,7 @@ fun AddEditFlatScreen(
 
                     } else {
 
-                        errorMessage = ""
+                        errorMessage = "" //this clears the previous error message
 
                         val newFlat = Flat(
 
@@ -317,7 +317,7 @@ fun AddEditFlatScreen(
                     Modifier.fillMaxWidth(),
 
                 enabled =
-                    !buildingViewModel.isSaving
+                    !buildingViewModel.isSaving  //Keep the Save button enabled when we are not saving; disable it while saving."
 
             ) {
 
