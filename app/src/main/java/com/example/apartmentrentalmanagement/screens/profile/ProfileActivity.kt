@@ -6,17 +6,23 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -30,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.apartmentrentalmanagement.screens.auth.LoginActivity
@@ -121,162 +128,207 @@ class ProfileActivity : ComponentActivity() {
                     modifier = Modifier.align(Alignment.Center)
                 )
             } else {
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(16.dp)
                 ) {
 
-                    Text(
-                        text = "Profile",
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    // Top bar
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                        IconButton(
+                            onClick = { finish() }
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
 
-                    if (isProfileMissing) {
                         Text(
-                            text = "Complete Your Profile",
-                            fontSize = 20.sp,
+                            text = "Profile",
+                            style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.secondary
+                            modifier = Modifier.weight(1f)
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        
-                        OutlinedTextField(
-                            value = fullName,
-                            onValueChange = { fullName = it },
-                            label = { Text("Full Name") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        
-                        Spacer(modifier = Modifier.height(12.dp))
-                        
-                        OutlinedTextField(
-                            value = phoneNumber,
-                            onValueChange = { phoneNumber = it },
-                            label = { Text("Phone Number") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        
-                        Spacer(modifier = Modifier.height(24.dp))
-                        
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+
+//                        Text(
+//                            text = "Profile",
+//                            fontSize = 30.sp,
+//                            fontWeight = FontWeight.Bold,
+//                            color = MaterialTheme.colorScheme.primary
+//                        )
+//
+//                        Spacer(modifier = Modifier.height(32.dp))
+
+                        if (isProfileMissing) {
+                            Text(
+                                text = "Complete Your Profile",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            OutlinedTextField(
+                                value = fullName,
+                                onValueChange = { fullName = it },
+                                label = { Text("Full Name") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            OutlinedTextField(
+                                value = phoneNumber,
+                                onValueChange = { phoneNumber = it },
+                                label = { Text("Phone Number") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            Button(
+                                onClick = {
+                                    if (fullName.isNotBlank() && phoneNumber.isNotBlank()) {
+                                        isLoading = true
+                                        val uid = currentUser?.uid
+                                        if (uid != null) {
+                                            val userData = hashMapOf(
+                                                "fullName" to fullName,
+                                                "email" to (currentUser.email ?: ""),
+                                                "phoneNumber" to phoneNumber
+                                            )
+                                            db.collection("users").document(uid).set(userData)
+                                                .addOnSuccessListener {
+                                                    isLoading = false
+                                                    isProfileMissing = false
+                                                    Toast.makeText(
+                                                        this@ProfileActivity,
+                                                        "Profile saved!",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                                .addOnFailureListener {
+                                                    isLoading = false
+                                                    Toast.makeText(
+                                                        this@ProfileActivity,
+                                                        "Failed to save: ${it.message}",
+                                                        Toast.LENGTH_LONG
+                                                    ).show()
+                                                }
+                                        }
+                                    } else {
+                                        Toast.makeText(
+                                            this@ProfileActivity,
+                                            "Please fill all fields",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Save Profile")
+                            }
+                        } else {
+                            Text(
+                                text = fullName.ifBlank { "No name available" },
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            Text(
+                                text = currentUser?.email ?: "No email available",
+                                fontSize = 16.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text(
+                                text = phoneNumber.ifBlank { "No phone number available" },
+                                fontSize = 16.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(40.dp))
+
                         Button(
                             onClick = {
-                                if (fullName.isNotBlank() && phoneNumber.isNotBlank()) {
-                                    isLoading = true
-                                    val uid = currentUser?.uid
-                                    if (uid != null) {
-                                        val userData = hashMapOf(
-                                            "fullName" to fullName,
-                                            "email" to (currentUser.email ?: ""),
-                                            "phoneNumber" to phoneNumber
-                                        )
-                                        db.collection("users").document(uid).set(userData)
-                                            .addOnSuccessListener {
-                                                isLoading = false
-                                                isProfileMissing = false
-                                                Toast.makeText(this@ProfileActivity, "Profile saved!", Toast.LENGTH_SHORT).show()
-                                            }
-                                            .addOnFailureListener {
-                                                isLoading = false
-                                                Toast.makeText(this@ProfileActivity, "Failed to save: ${it.message}", Toast.LENGTH_LONG).show()
-                                            }
-                                    }
-                                } else {
-                                    Toast.makeText(this@ProfileActivity, "Please fill all fields", Toast.LENGTH_SHORT).show()
-                                }
+                                showLogoutDialog = true
                             },
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text("Save Profile")
+                            Text(
+                                text = "Logout",
+                                fontSize = 16.sp
+                            )
                         }
-                    } else {
-                        Text(
-                            text = fullName.ifBlank { "No name available" },
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        Text(
-                            text = currentUser?.email ?: "No email available",
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Text(
-                            text = phoneNumber.ifBlank { "No phone number available" },
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(40.dp))
-
-                    Button(
-                        onClick = {
-                            showLogoutDialog = true
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Logout",
-                            fontSize = 16.sp
-                        )
                     }
                 }
             }
-        }
 
-        if (showLogoutDialog) {
+            if (showLogoutDialog) {
 
-            AlertDialog(
-                onDismissRequest = {
-                    showLogoutDialog = false
-                },
-                title = {
-                    Text("Logout")
-                },
-                text = {
-                    Text("Are you sure you want to logout?")
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-
-                            auth.signOut()
-
-                            startActivity(
-                                Intent(
-                                    this@ProfileActivity,
-                                    LoginActivity::class.java
-                                )
-                            )
-
-                            finish()
-                        }
-                    ) {
+                AlertDialog(
+                    onDismissRequest = {
+                        showLogoutDialog = false
+                    },
+                    title = {
                         Text("Logout")
-                    }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = {
-                            showLogoutDialog = false
+                    },
+                    text = {
+                        Text("Are you sure you want to logout?")
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+
+                                auth.signOut()
+
+                                startActivity(
+                                    Intent(
+                                        this@ProfileActivity,
+                                        LoginActivity::class.java
+                                    )
+                                )
+
+                                finish()
+                            }
+                        ) {
+                            Text("Logout")
                         }
-                    ) {
-                        Text("Cancel")
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                                showLogoutDialog = false
+                            }
+                        ) {
+                            Text("Cancel")
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
+

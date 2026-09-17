@@ -19,14 +19,20 @@ class PropertyManagementActivity : ComponentActivity() {
 
         setContent {
             ApartmentRentalManagementTheme {
-                PropertyManagementNavigation()
+                PropertyManagementNavigation(
+                    onBackClick = {
+                        finish()
+                    }
+                )
             }
         }
     }
 }
 
 @Composable
-fun PropertyManagementNavigation() {
+fun PropertyManagementNavigation(
+    onBackClick: () -> Unit
+) {
 
     val navController = rememberNavController()
 
@@ -43,9 +49,7 @@ fun PropertyManagementNavigation() {
 
             BuildingListScreen(
 
-                onBackClick = {
-                    navController.popBackStack()
-                },
+                onBackClick = onBackClick,
 
                 onAddPropertyClick = {
                     navController.navigate("add_property")

@@ -1,5 +1,6 @@
 package com.example.apartmentrentalmanagement.screens.splash
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -35,6 +36,7 @@ import com.example.apartmentrentalmanagement.screens.auth.LoginActivity
 import com.example.apartmentrentalmanagement.screens.auth.SignupActivity
 import com.example.apartmentrentalmanagement.ui.theme.ApartmentRentalManagementTheme
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

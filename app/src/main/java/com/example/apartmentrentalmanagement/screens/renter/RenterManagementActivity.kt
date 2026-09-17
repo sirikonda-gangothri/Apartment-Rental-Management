@@ -109,9 +109,9 @@ class RenterManagementActivity : ComponentActivity() {
                         )
                     }
 
-                    // =====================================================
-                    // RENTER DETAILS
-                    // =====================================================
+// =====================================================
+// RENTER DETAILS
+// =====================================================
 
                     composable(
                         route = "renter_details/{renterId}",
@@ -131,19 +131,16 @@ class RenterManagementActivity : ComponentActivity() {
                             renterId = detailsRenterId,
 
                             onBackClick = {
-
                                 navController.popBackStack()
                             },
 
                             onEditClick = {
-
                                 navController.navigate(
                                     "edit_renter/$detailsRenterId"
                                 )
                             },
 
                             onLedgerClick = {
-
                                 navController.navigate(
                                     "renter_ledger/$detailsRenterId"
                                 )
