@@ -47,13 +47,6 @@ private fun RentNavigation(
     val navController =
         rememberNavController()
 
-
-    /*
-     * If renterId was passed from another screen,
-     * open that renter's Rent Details directly.
-     *
-     * Otherwise, open the Rent Tracker.
-     */
     val startDestination =
         if (renterId != null) {
             "rent_details/$renterId"

@@ -209,7 +209,9 @@ fun RentTrackerScreen(
             TopAppBar(
 
                 title = {
-                    Text("Rent Tracker")
+                    Text(text="Rent Tracker",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold)
                 },
 
                 navigationIcon = {

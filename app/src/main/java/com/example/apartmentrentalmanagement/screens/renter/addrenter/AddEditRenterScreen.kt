@@ -392,7 +392,9 @@ fun AddEditRenterScreen(
                                 "Add Renter"
                             } else {
                                 "Edit Renter"
-                            }
+                            },
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
                     )
                 },
 

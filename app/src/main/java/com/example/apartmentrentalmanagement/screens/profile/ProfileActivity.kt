@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -176,6 +178,7 @@ class ProfileActivity : ComponentActivity() {
 //
 //                        Spacer(modifier = Modifier.height(32.dp))
 
+
                         if (isProfileMissing) {
                             Text(
                                 text = "Complete Your Profile",
@@ -246,13 +249,23 @@ class ProfileActivity : ComponentActivity() {
                                 Text("Save Profile")
                             }
                         } else {
+
+                            Icon(
+                                imageVector = Icons.Default.AccountCircle,
+                                contentDescription = "Profile",
+                                modifier = Modifier.size(100.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+
+                            Spacer(modifier = Modifier.height(20.dp))
+
                             Text(
                                 text = fullName.ifBlank { "No name available" },
-                                fontSize = 22.sp,
+                                fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold
                             )
 
-                            Spacer(modifier = Modifier.height(12.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
 
                             Text(
                                 text = currentUser?.email ?: "No email available",
@@ -304,14 +317,15 @@ class ProfileActivity : ComponentActivity() {
 
                                 auth.signOut()
 
-                                startActivity(
-                                    Intent(
-                                        this@ProfileActivity,
-                                        LoginActivity::class.java
-                                    )
-                                )
+                                val intent = Intent(
+                                    this@ProfileActivity,
+                                    LoginActivity::class.java
+                                ).apply {
+                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                }
 
-                                finish()
+                                startActivity(intent)
                             }
                         ) {
                             Text("Logout")

@@ -1,5 +1,6 @@
 package com.example.apartmentrentalmanagement.screens.renter
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.apartmentrentalmanagement.screens.rent.RentManagementActivity
 import com.example.apartmentrentalmanagement.screens.renter.addrenter.AddEditRenterScreen
 import com.example.apartmentrentalmanagement.ui.theme.ApartmentRentalManagementTheme
 
@@ -141,9 +143,19 @@ class RenterManagementActivity : ComponentActivity() {
                             },
 
                             onLedgerClick = {
-                                navController.navigate(
-                                    "renter_ledger/$detailsRenterId"
-                                )
+
+                                val intent =
+                                    Intent(
+                                        this@RenterManagementActivity,
+                                        RentManagementActivity::class.java
+                                    ).apply {
+                                        putExtra(
+                                            "renterId",
+                                            detailsRenterId
+                                        )
+                                    }
+
+                                startActivity(intent)
                             }
                         )
                     }
@@ -163,32 +175,6 @@ class RenterManagementActivity : ComponentActivity() {
                                 navController.navigate(
                                     "renter_details/$historyRenterId"
                                 )
-                            }
-                        )
-                    }
-
-                    // =====================================================
-                    // RENTER LEDGER
-                    // =====================================================
-
-                    composable(
-                        route = "renter_ledger/{renterId}",
-                        arguments = listOf(
-                            navArgument("renterId") {
-                                type = NavType.StringType
-                            }
-                        )
-                    ) { backStackEntry ->
-
-                        val ledgerRenterId =
-                            backStackEntry.arguments
-                                ?.getString("renterId")
-                                ?: return@composable
-
-                        RenterLedgerScreen(
-                            renterId = ledgerRenterId,
-                            onBackClick = {
-                                navController.popBackStack()
                             }
                         )
                     }

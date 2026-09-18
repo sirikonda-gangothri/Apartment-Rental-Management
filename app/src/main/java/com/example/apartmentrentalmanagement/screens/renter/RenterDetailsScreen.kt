@@ -61,7 +61,11 @@ fun RenterDetailsScreen(
 
             TopAppBar(
                 title = {
-                    Text("Renter Details")
+                    Text(
+                        text = "Renter Details",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
                 },
                 navigationIcon = {
 

@@ -17,6 +17,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -24,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import java.text.NumberFormat
 import java.util.Locale
@@ -65,7 +67,9 @@ fun RentDetailsScreen(
                 TopAppBar(
 
                     title = {
-                        Text("Rent Details")
+                        Text(text="Rent Details",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold)
 
                     },
 
@@ -126,7 +130,9 @@ fun RentDetailsScreen(
             TopAppBar(
 
                 title = {
-                    Text("Rent Details")
+                    Text(text="Rent Details",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold)
                 },
 
                 navigationIcon = {
@@ -161,12 +167,15 @@ fun RentDetailsScreen(
 
                 Spacer(
                     modifier =
-                        Modifier.height(8.dp)
+                        Modifier.height(20.dp)
+                            .padding(bottom = 8.dp)
                 )
 
 
                 Text(
-                    text = renter.name
+                    text = renter.name,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
                 )
 
                 Text(
@@ -333,7 +342,8 @@ private fun RentDetailAmount(
     Row(
 
         modifier =
-            Modifier.fillMaxWidth(),
+            Modifier.fillMaxWidth()
+                .padding(bottom = 8.dp),
 
         horizontalArrangement =
             Arrangement.SpaceBetween
@@ -396,7 +406,7 @@ private fun PaymentRow(
                     )
             )
         }
-
+        Spacer(modifier = Modifier.padding(bottom = 8.dp))
         HorizontalDivider()
     }
 }

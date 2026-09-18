@@ -40,14 +40,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import java.text.NumberFormat
+import java.util.Locale
 import com.example.apartmentrentalmanagement.screens.auth.LoginActivity
 import com.example.apartmentrentalmanagement.screens.profile.ProfileActivity
 import com.example.apartmentrentalmanagement.screens.building.PropertyManagementActivity
 import com.example.apartmentrentalmanagement.screens.rent.RentManagementActivity
 import com.example.apartmentrentalmanagement.screens.renter.RenterManagementActivity
-//import com.example.apartmentrentalmanagement.screens.renter.RenterManagementNavigation
-//import com.example.apartmentrentalmanagement.screens.login.LoginActivity
 import com.example.apartmentrentalmanagement.ui.theme.ApartmentRentalManagementTheme
+import com.example.apartmentrentalmanagement.screens.dashboard.DashboardViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlin.jvm.java
 
@@ -70,6 +72,12 @@ class DashboardActivity : ComponentActivity() {
         var selectedItem by remember {
             mutableIntStateOf(0)
         }
+
+        val dashboardViewModel: DashboardViewModel = viewModel()
+
+        val analytics = dashboardViewModel.analytics
+
+        val isLoading = dashboardViewModel.isLoading
 
         Scaffold(
 
@@ -206,7 +214,7 @@ class DashboardActivity : ComponentActivity() {
                 )
 
                 Text(
-                    text = "Welcome back! 👋",
+                    text = "Welcome!👋",
                     fontSize = 26.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -223,19 +231,31 @@ class DashboardActivity : ComponentActivity() {
 
                     DashboardCard(
                         title = "Total Flats",
-                        value = "--",
+                        value = if (isLoading) {
+                            "--"
+                        } else {
+                            analytics.totalFlats.toString()
+                        },
                         modifier = Modifier.weight(1f)
                     )
 
                     DashboardCard(
                         title = "Occupied",
-                        value = "--",
+                        value = if (isLoading) {
+                            "--"
+                        } else {
+                            analytics.occupiedFlats.toString()
+                        },
                         modifier = Modifier.weight(1f)
                     )
 
                     DashboardCard(
                         title = "Vacant",
-                        value = "--",
+                        value = if (isLoading) {
+                            "--"
+                        } else {
+                            analytics.vacantFlats.toString()
+                        },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -251,13 +271,21 @@ class DashboardActivity : ComponentActivity() {
 
                     DashboardCard(
                         title = "Expected Rent",
-                        value = "₹--",
+                        value = if (isLoading) {
+                            "₹--"
+                        } else {
+                            formatRupees(analytics.expectedRent)
+                        },
                         modifier = Modifier.weight(1f)
                     )
 
                     DashboardCard(
                         title = "Collected Rent",
-                        value = "₹--",
+                        value = if (isLoading) {
+                            "₹--"
+                        } else {
+                            formatRupees(analytics.collectedRent)
+                        },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -268,7 +296,11 @@ class DashboardActivity : ComponentActivity() {
 
                 DashboardCard(
                     title = "Pending Rent",
-                    value = "₹--",
+                    value = if (isLoading) {
+                        "₹--"
+                    } else {
+                        formatRupees(analytics.pendingRent)
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -283,11 +315,29 @@ class DashboardActivity : ComponentActivity() {
                     contentAlignment = Alignment.Center
                 ) {
 
-                    Text(
-                        text = "Analytics coming soon",
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    if (isLoading) {
+
+                        Text(
+                            text = "Loading analytics..."
+                        )
+
+                    } else {
+
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+
+                            Text(
+                                text = "Occupancy Rate: " +
+                                        "${analytics.occupancyPercentage.toInt()}%"
+                            )
+
+                            Text(
+                                text = "Rent Collection: " +
+                                        "${analytics.collectionPercentage.toInt()}%"
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -339,10 +389,23 @@ class DashboardActivity : ComponentActivity() {
         val intent = Intent(
             this,
             LoginActivity::class.java
-        )
+        ).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
 
         startActivity(intent)
-
-        finish()
     }
+}
+
+private fun formatRupees(amount: Double): String {
+
+    val formatter =
+        NumberFormat.getNumberInstance(
+            Locale("en", "IN")
+        )
+
+    formatter.maximumFractionDigits = 0
+
+    return "₹${formatter.format(amount)}"
 }

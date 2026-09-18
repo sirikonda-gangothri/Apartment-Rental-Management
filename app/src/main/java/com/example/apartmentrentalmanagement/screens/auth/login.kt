@@ -160,14 +160,15 @@ class LoginActivity : ComponentActivity() {
                                     ).show()
 
                                     // Dashboard navigation
-                                    startActivity(
-                                        Intent(
-                                            this@LoginActivity,
-                                            DashboardActivity::class.java
-                                        )
-                                    )
+                                    val intent = Intent(
+                                        this@LoginActivity,
+                                        DashboardActivity::class.java
+                                    ).apply {
+                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                                                Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    }
 
-                                    finish()
+                                    startActivity(intent)
 
                                 } else {
 

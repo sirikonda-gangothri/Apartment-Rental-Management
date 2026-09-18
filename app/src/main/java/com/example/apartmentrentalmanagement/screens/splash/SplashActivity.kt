@@ -34,13 +34,30 @@ import androidx.compose.ui.unit.sp
 import com.example.apartmentrentalmanagement.R
 import com.example.apartmentrentalmanagement.screens.auth.LoginActivity
 import com.example.apartmentrentalmanagement.screens.auth.SignupActivity
+import com.example.apartmentrentalmanagement.screens.dashboard.DashboardActivity
 import com.example.apartmentrentalmanagement.ui.theme.ApartmentRentalManagementTheme
+import com.google.firebase.auth.FirebaseAuth
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (FirebaseAuth.getInstance().currentUser != null) {
+
+            startActivity(
+                Intent(
+                    this,
+                    DashboardActivity::class.java
+                )
+            )
+
+            finish()
+
+            return
+        }
+
 
         setContent {
             ApartmentRentalManagementTheme {
