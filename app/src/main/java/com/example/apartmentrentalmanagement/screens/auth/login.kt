@@ -149,7 +149,7 @@ class LoginActivity : ComponentActivity() {
                             auth.signInWithEmailAndPassword(
                                 email,
                                 password
-                            ).addOnCompleteListener { task ->
+                            ).addOnCompleteListener { task ->         //asynchronous opertaion-That means your app doesn't stop and wait. Firebase works in the background and later tells you the result. task contains the result. When Firebase finishes the login operation, execute this code and store the result in task.”
 
                                 if (task.isSuccessful) {
 
